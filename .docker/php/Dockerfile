@@ -13,4 +13,4 @@ RUN docker-php-ext-install zip pdo pdo_mysql
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.0 /usr/bin/composer /usr/local/bin/composer
