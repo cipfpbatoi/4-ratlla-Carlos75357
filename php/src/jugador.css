@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #0056b3;
+}
+
+fieldset {
+    border: 2px solid #0056b3;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.color-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.color-label {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: inline-block;
+}
+
+.color-label.red { background-color: red; }
+.color-label.blue { background-color: blue; }
+.color-label.yellow { background-color: yellow; }
+.color-label.green { background-color: green; }
+.color-label.purple { background-color: purple; }
+.color-label.orange { background-color: orange; }
+.color-label.pink { background-color: pink; }
+.color-label.brown { background-color: brown; }
+.color-label.black { background-color: black; }
+.color-label.turquoise { background-color: turquoise; }
+.color-label.maroon { background-color: maroon; }
+.color-label.silver { background-color: silver; }
+.color-label.goldenrod { background-color: goldenrod; }
+
+input[type="radio"]:checked + .color-label {
+    border: 2px solid #333;
+}
+
+button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #003d7a;
+}
