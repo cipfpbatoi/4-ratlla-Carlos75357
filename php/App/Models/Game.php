@@ -50,7 +50,7 @@ class Game
         $this->players = [1 => $jugador1,2 => $jugador2];
         $this->winner = null;
 
-        Logger::getLogger()->info('Nueva partida iniciada entre ' . $jugador1->getName() . ' y ' . $jugador2->getName());
+        Logger::getLogger()->info("Nueva partida iniciada entre {$jugador1->getName()} y {$jugador2->getName()}");
     }
 
     /**
@@ -148,13 +148,13 @@ class Game
         if (!$this->board->isValidMove($columna)) {
             throw new IllegalMoveException('Columna no valida');
         }
-        Logger::getLogger()->info('Jugador ' . $this->nextPlayer . ' hace un movimiento en la columna ' . $columna);
+        Logger::getLogger()->info("El jugador {$this->nextPlayer} hace un movimiento en la columna {$columna}");
 
         $coord = $this->board->setMovementOnBoard($columna, $this->nextPlayer);
         if ($this->board->checkWin($coord)) {
             $this->winner = $this->players[$this->nextPlayer];
             $this->scores[$this->nextPlayer]++;
-            Logger::getLogger()->info('El jugador ' . $this->nextPlayer . ' ha ganado la partida');
+            Logger::getLogger()->info("El jugador {$this->nextPlayer} ha ganado la partida");
         } else {
             $this->nextPlayer = ($this->nextPlayer == 1) ? 2 : 1;
         }
@@ -166,7 +166,7 @@ class Game
      */
     public function playAutomatic(){
         $opponent = $this->nextPlayer === 1 ? 2 : 1;
-        Logger::getLogger()->info('El jugador automático ' . $this->nextPlayer . ' hace un movimiento');
+        Logger::getLogger()->info("El jugador automático {$this->nextPlayer} hace un movimiento");
         for ($col = 1; $col <= Board::COLUMNS; $col++) {
             if ($this->board->isValidMove($col)) {
                 $tempBoard = clone($this->board);
@@ -211,6 +211,22 @@ class Game
         $_SESSION['game'] = serialize($this);
     }
 
+    public function saveGame($db) {
+        try {
+            $user_id = $_SESSION['user_id'];
+            $game = $_SESSION['game'];
+    
+            $sql = "INSERT INTO partides (usuari_id, game) VALUES (?, ?) ON DUPLICATE KEY UPDATE game = ?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$user_id, $game, $game]);
+            Logger::getLogger()->info('Se ha guardado el juego');
+        } catch (\Exception $e) {
+            Logger::getLogger()->error('Error al guardar el juego: ' . $e->getMessage());
+            throw $e;
+        }
+        
+    }
+
     /**
      * Restaura l'estat del joc de les sessions
      * @return Game|null
@@ -220,6 +236,22 @@ class Game
             return unserialize($_SESSION['game'],[Game::class]);            
         }
         return null;
+    }
+
+    public static function restoreGame($db) {
+        try {
+            $user_id = $_SESSION['user_id'];
+            $sql = "SELECT * FROM partides WHERE usuari_id = ?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$user_id]);
+            $game = $stmt->fetch();
+            Logger::getLogger()->info('Se ha recuperado el juego');
+
+            return unserialize($game['game'],[Game::class]);
+        } catch (\Exception $e) {
+            Logger::getLogger()->error('Error al recuperar el juego: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
 }

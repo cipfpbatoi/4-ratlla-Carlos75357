@@ -13,8 +13,8 @@ class GameTest extends TestCase
 
     protected function setUp(): void
     {
-        $player1 = new Player("Jugador 1", 1);
-        $player2 = new Player("Jugador 2", 2);
+        $player1 = new Player("Jugador 1", '#FF0000');
+        $player2 = new Player("Jugador 2", '#00FF00');
         $this->game = new Game($player1, $player2);
     }
 

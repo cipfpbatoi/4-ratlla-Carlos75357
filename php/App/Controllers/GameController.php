@@ -16,6 +16,7 @@ class GameController
      * @var Game
      */
     private Game $game;
+    private $db;
 
 // Request és l'array $_POST
 
@@ -24,8 +25,9 @@ class GameController
  *
  * @param array|null $request
  */
-public function __construct($request=null)
+public function __construct($request=null, $db=null)
 {
+    $this->db = $db;
     if (!isset($_SESSION['game'])) {
         $jugador1 = new Player($request['name'], $request['color']);
         $jugador2 = new Player('La máquina', '#808080', true);
@@ -66,13 +68,26 @@ public function play(Array $request)
     }
 
     if (isset($request['save'])) {
-        $this->game->save();
+        try {
+            $this->game->saveGame($this->db);
+        } catch (\Exception $e) {
+            $mensajeError = 'No se ha podido guardar el juego. Por favor, vuelva a intentarlo';
+        }
+    }
+
+    if (isset($request['restore'])) {
+        try {
+            $this->game = Game::restoreGame($this->db);
+            $this->game->save();
+        } catch (\Exception $e) {
+            $mensajeError = 'No se ha podido recuperar el juego. Por favor, vuelva a intentarlo';
+        }
     }
 
     if ($this->game->getBoard()->isFull()) {
         $mensajeError = 'El tablero ya esta lleno. Por favor, elija una columna diferente';
     } else {
-        if (!$this->game->getWinner() && isset($request['columna']) && !$this->game->getPlayerO()->getIsAutomatic()) { // Solo jugar si no hay un ganador
+        if (!$this->game->getWinner() && isset($request['columna']) && !$this->game->getPlayerO()->getIsAutomatic()) {
             try {
                 $this->game->play($request['columna']);
             } catch (IllegalMoveException $e) {

@@ -21,6 +21,9 @@
             <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/board.view.php'; ?>
             <input type="submit" class="btnSubmit" name="reset" value="Reiniciar joc">
             <input type="submit" class="btnSubmit" name="exit" value="Acabar joc">
+            <input type="submit" class="btnSubmit" name="save" value="Guardar partida" <?php $winner != null ? 'disabled' : ''; ?>>
+            <input type="submit" class="btnSubmit" name="restore" value="Cargar partida">
+            <!-- <input type="submit" class="btnSubmit" name="help" value="Ajuda"> -->
         </form>
 
         <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/panel.view.php'; ?>
